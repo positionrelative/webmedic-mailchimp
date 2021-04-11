@@ -25,6 +25,8 @@ class MailchimpManager
                 "status"        => "subscribed",
             ]);
 
+            Log::info('subscribe setListMember response:'.print_r($response, true));
+
             return $response->id;
         } catch (\Exception $e) {
             Log::error("Can't subscribe user with email: {$email} {$e->getMessage()}");
@@ -38,6 +40,8 @@ class MailchimpManager
                 "status" => "unsubscribed",
             ]);
 
+            Log::info('unsubscribe setListMember response:'.print_r($response, true));
+
             return $response->id;
         } catch (\Exception $e) {
             Log::error("Can't unsubscribe user with hash: {$hash} {$e->getMessage()}");
@@ -47,11 +51,12 @@ class MailchimpManager
     public function delete($hash)
     {
         try {
-            $this->getMailchimp()->lists->deleteListMemberPermanent(
+            $response = $this->getMailchimp()->lists->deleteListMemberPermanent(
                 $this->getListId(),
                 $hash
             );
 
+            Log::info('delete deleteListMemberPermanent response:'.print_r($response, true));
             return true;
         } catch (\Exception $e) {
             Log::error("Can't delete user with hash: {$hash} {$e->getMessage()}");
@@ -63,7 +68,11 @@ class MailchimpManager
     public function getListMembers()
     {
         try {
-            return $this->getMailChimp()->lists->getListMembersInfo($this->getListId());
+            $response = $this->getMailChimp()->lists->getListMembersInfo($this->getListId());
+
+            Log::info('getListMembersInfo response:'.print_r($response, true));
+
+            return $response;
         } catch (\Exception $e) {
             Log::error("Can't receive list member informations: {$e->getMessage()}");
 
