@@ -1,0 +1,35 @@
+version: '3'
+services:
+  php:
+    container_name: webmedic-test
+    build:
+      context: .
+    volumes:
+      - ./:/var/www/html/
+      - ./storage/app/public/storage:/var/www/html/public/storage
+      - ./.development/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+    ports:
+      - "80:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "2"
+  mysql:
+    container_name: mysql-webmedic
+    image: mysql
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Budapest
+      MYSQL_ROOT_PASSWORD: development
+      MYSQL_DATABASE: slatedesign
+    volumes:
+      - ./.development/config/mysql:/etc/mysql/conf.d
+      - ./.development/data/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400k"
+        max-file: "2"
